@@ -1,0 +1,11 @@
+# WordPress + php-fpm Dockerfile
+FROM debian:latest
+
+# Install PHP and necessary extensions
+RUN apt-get update && apt-get install -y php-fpm php-mysql
+
+# Copy WordPress files
+COPY wordpress /var/www/html
+
+# Start php-fpm
+CMD ["php-fpm", "-F"]
