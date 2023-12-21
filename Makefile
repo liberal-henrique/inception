@@ -1,40 +1,34 @@
-CC			=	c++
-CFLAGS		=	-Wall -Wextra -Werror -std=c++98
-RM			=	/bin/rm -f
-NAME		=	
+DOCKERFILE = srcs/docker-compose.yml
+CMD	= docker compose -f $(DOCKERFILE)
 
-SRCS		=	main.cpp ScalarConvert.cpp
+build:
+	@if [ ! -d  "/home/lliberal42/data" ]; then \
+		mkdir /home/lliberal42/data /home/lliberal42/data/wordpress /home/lliberal42/data/mariadb; \
+	fi
+	$(CMD) build
 
-all: $(NAME)
+up: build
+		$(CMD) up
 
-OBJS = $(SRCS:.cpp=.o)
+down:
+		$(CMD) down --volume --rmi all
 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
-
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-build-service1:
-    docker build -t service1-image ./service1
-
-build-service2:
-    docker build -t service2-image ./service2
-
-run-compose:
-	docker-compose up --build
-
-stop-compose:
-    docker-compose down
+prune: down
+		docker system prune -f
 
 clean:
-		$(RM) $(OBJS)
+	@if [ -d  "/home/lliberal42/data" ]; then \
+		sudo rm -rf /home/lliberal42/data; \
+	fi
 
-fclean: clean
-		$(RM) $(NAME)
-
-re: fclean all
-
-.PHONY: all re clean fclean m
+extraclean: down prune clean
 
 
+#docker compose build
+#docker compose up
+#docker exec -it mariadb bash
+#
+#docker ps
+#
+#docker compose down --volume --rmi all
+#docker system prune -a

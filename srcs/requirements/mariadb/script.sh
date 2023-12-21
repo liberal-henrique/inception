@@ -1,27 +1,20 @@
 #!/bin/bash
 
-# MySQL commands
-MYSQL_CMD="mysql -u$DB_USER -p$DB_PASSWORD"
+if [ ! -d "/var/lib/mysql/$DBNAME" ]; then
+service mariadb start;
 
-# Execute SQL commands
-$MYSQL_CMD -e "CREATE DATABASE $DB_NAME;"
-$MYSQL_CMD -e "CREATE USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSWORD';"
-$MYSQL_CMD -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'localhost';"
-$MYSQL_CMD -e "FLUSH PRIVILEGES;"
+sleep 5;
 
-# Additional steps
-$MYSQL_CMD -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$ROOT_PASSWORD';"
-$MYSQL_CMD -e "FLUSH PRIVILEGES;"
+# Set root password
+echo "++++++++++++++++++++++++++++++++++++++SEU CU++++++++++++++++++++++++++++++++++++++++++++"
 
-# Importing Database Schema (replace schema.sql with your actual SQL file)
-if [ -f schema.sql ]; then
-    $MYSQL_CMD $DB_NAME < schema.sql
-    echo "Database schema imported."
-else
-    echo "Warning: schema.sql not found. Skipping database schema import."
+# Create database and table
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS $DBNAME;"
+mysql -u root -e "USE $DBNAME; CREATE TABLE IF NOT EXISTS User (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL, comment TEXT NOT NULL);"
+
+# Example: Insert a user
+mysql -u root -e "USE $DBNAME; INSERT INTO User (username, comment) VALUES ('example_user', 'This is a comment.');"
+mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DBUSER'@'%' IDENTIFIED BY '$DBPASS'; FLUSH PRIVILEGES;"
 fi
 
 exec mysqld_safe --bind-address=0.0.0.0
-
-echo "Database setup complete."
-
