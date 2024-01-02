@@ -32,3 +32,9 @@ extraclean: down prune clean
 #
 #docker compose down --volume --rmi all
 #docker system prune -a
+
+
+# mysql -u root
+# show databases;
+# use qualquercoisa;
+# show tables;

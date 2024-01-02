@@ -6,7 +6,7 @@ service mariadb start;
 sleep 5;
 
 # Set root password
-echo "++++++++++++++++++++++++++++++++++++++SEU CU++++++++++++++++++++++++++++++++++++++++++++"
+echo "++++++++++++++++++++++++++++++++++++++Estou AQUIIIIII++++++++++++++++++++++++++++++++++++++++++++"
 
 # Create database and table
 mysql -u root -e "CREATE DATABASE IF NOT EXISTS $DBNAME;"
